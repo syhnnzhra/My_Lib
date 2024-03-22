@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MyLib-Read Online Novels</string>
+    <string name="title">Book Title</string>
+    <string name="writer">Written By</string>
+    <string name="total_pages">Total Pages</string>
+    <string name="book_synopsis_hint">Book Synopsis</string>
+    <string name="save_button_label">Save</string>
+    <string-array name="items_option">
+        <item>Edit</item>
+        <item>Delete</item>
+        <item>Cancel</item>
+    </string-array>
+</resources>
