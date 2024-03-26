@@ -28,8 +28,8 @@ class EditorActivity : AppCompatActivity() {
         database = AppDatabase.getInstance(applicationContext)
 
         val intent = intent.extras
-        if (intent != null){
-            val id = intent.getInt("id", 0)
+        val id = intent?.getInt("id", 0) ?: 0
+        if (id != 0) {
             val book = database.bookDao().get(id)
 
             titleEditText.setText(book.title)
@@ -39,37 +39,40 @@ class EditorActivity : AppCompatActivity() {
             finish()
         }
 
-        val titleText = titleEditText.text.toString()
-        val writerText = writerEditText.text.toString()
-        val pagesText = pagesEditText.text.toString().toIntOrNull()
-        val synopsisText = synopsisEditText.text.toString()
+        btnsave.setOnClickListener {
+            val titleText = titleEditText.text.toString()
+            val writerText = writerEditText.text.toString()
+            val pagesText = pagesEditText.text.toString().toIntOrNull()
+            val synopsisText = synopsisEditText.text.toString()
 
-        if (titleText.isNotEmpty() && writerText.isNotEmpty() && pagesText != null && synopsisText.isNotEmpty()) {
-            if (intent != null) {
-                // Edit data
-                val bookEdit = Book().apply {
-                    this.id = id
-                    this.title = titleText
-                    this.writer = writerText
-                    this.pages = pagesText
-                    this.synopsis = synopsisText
+            if (titleText.isNotEmpty() && writerText.isNotEmpty() && pagesText != null && synopsisText.isNotEmpty()) {
+                if (id != 0) {
+                    // Edit data
+                    val bookEdit = Book().apply {
+                        this.id = id
+                        this.title = titleText
+                        this.writer = writerText
+                        this.pages = pagesText
+                        this.synopsis = synopsisText
+                    }
+
+                    database.bookDao().update(bookEdit)
+                } else {
+                    // Buat data baru
+                    val book = Book().apply {
+                        this.title = titleText
+                        this.writer = writerText
+                        this.pages = pagesText
+                        this.synopsis = synopsisText
+                    }
+
+                    database.bookDao().insertAll(book)
                 }
-
-                database.bookDao().update(bookEdit)
+                finish()
             } else {
-                // Buat data baru
-                val book = Book().apply {
-                    this.title = titleText
-                    this.writer = writerText
-                    this.pages = pagesText
-                    this.synopsis = synopsisText
-                }
-
-                database.bookDao().insertAll(book)
+                Toast.makeText(applicationContext, "All fields are required", Toast.LENGTH_SHORT)
+                    .show()
             }
-            finish()
-        } else {
-            Toast.makeText(applicationContext, "All fields are required", Toast.LENGTH_SHORT).show()
         }
     }
 }
